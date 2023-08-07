@@ -1,0 +1,58 @@
+syntax = "proto3";
+package pb;
+
+enum PacketType {
+    Unknow = 0;
+    PacketTypeAppInfoReq = 1;
+    PacketTypeAppInfoRsp = 2;
+    PacketTypeSetPropertyReq = 3;
+    PacketTypeGetUriContentReq = 4;
+    PacketTypeGetUriContentRsp = 5;
+    PacketTypeGetChildDirRep = 6;
+    PacketTypeGetChildDirRsp = 7;
+}
+
+message WindowInfo{
+    int32 screenWidth = 1;
+    int32 screenHeight = 2;
+    bytes screenImage = 3;
+    bytes objectBuffer = 4;
+    int32 windowId = 5;
+}
+
+message AppInfoRsp {
+    string appName = 1;
+    repeated WindowInfo windows = 2;
+}
+
+message SetPropertyReq {
+    int32 windowUniqueId = 1;  
+    int32 propertyUniqueId = 2;
+    string propertyName = 3;
+    bytes value = 4;
+}
+
+message GetUriContentReq {
+    string uri = 1;
+}
+
+message GetUriContentRsp {
+    string uri = 1;
+    bytes content = 2;
+}
+
+message GetChildDirRep {
+    string uri = 1;
+    bool resure = 2;
+}
+
+message FileInfo {
+    bool isFile  = 1;
+    uint64 fileSize =2;
+    string filePath = 3;
+}
+
+message GetChildDirRsp {
+    string parentDir = 1;
+    repeated FileInfo info = 2; 
+}

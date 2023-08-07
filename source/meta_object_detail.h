@@ -1,0 +1,54 @@
+#pragma once
+#include <QObject>
+#include <QString>
+#include <QMap>
+#include <QJsonObject>
+#include <QMetaProperty>
+
+class MetaObjectDetail {
+ public:
+  MetaObjectDetail(const QObject* object);
+  MetaObjectDetail() {};
+
+  const QVariant& PropertyValueForKey(const QString& key) const;
+  const QMetaProperty& PropertyForKey(const QString& key) const;
+
+  QStringList PropertyKeys() const;
+  const QString& id() const { 
+    return id_;
+  }
+
+  const QString& class_name() const { 
+    return class_name_; 
+  }
+
+  friend QDataStream& operator<<(QDataStream& stream, const MetaObjectDetail& detail);
+  friend QDataStream& operator>>(QDataStream& stream, MetaObjectDetail& detail);
+
+  QByteArray Serial() const;
+  static MetaObjectDetail From(const QByteArray& data);
+
+  QJsonObject DumpToJson() const;
+  QString DumpToString() const;
+
+private:
+  using ObjectHandler = std::function<void(const QString&, const QVariant&)>;
+
+  void RegisterAllObjectHandler();
+  void RegisterObjectHandler(int meta_type_id, const ObjectHandler& handler);
+
+  void HandleQQuickAnchors(const QString& property_name, const QVariant& property_value);
+  void HanldeQObject(const QString& property_name,
+                     const QVariant& property_value);
+  void HanldeQQuickAnchorLine(const QString& property_name,
+                              const QVariant& property_value);
+
+  void AddCustomPropertites(const QObject* object);
+
+ private:
+  QString id_;
+  QString class_name_;
+  QMap<QString, QVariant> properties_;
+  QMap<int, ObjectHandler> object_handler_map_;
+  QMap<QString, QMetaProperty> property_map_;
+};

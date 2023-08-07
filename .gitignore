@@ -1,0 +1,5 @@
+build-example-Felgo_SDK_Desktop_Qt_6_4_1_MSVC2019_64bit-Debug/
+project/
+out/
+/source/pb/*.h
+/source/pb/*.cc

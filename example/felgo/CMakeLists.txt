@@ -42,15 +42,15 @@ qt_add_executable(appfelgo
 
 # Deploy resources to build folder/package directly
 # comment for publishing
-deploy_resources("${QmlFiles};${AssetsFiles}")
+# deploy_resources("${QmlFiles};${AssetsFiles}")
 
 # Add QML files and resources to QML module to included them via QRC automatically:
 qt_add_qml_module(appfelgo
     URI felgo
     VERSION 1.0
 # uncomment for publishing:
-#    QML_FILES ${QmlFiles}
-#    RESOURCES ${AssetsFiles}
+    QML_FILES ${QmlFiles}
+    RESOURCES ${AssetsFiles}
     NO_RESOURCE_TARGET_PATH
 )
 

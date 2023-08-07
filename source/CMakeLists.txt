@@ -16,7 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-cmake_minimum_required(VERSION 3.24.0)
+cmake_minimum_required(VERSION 3.16)
 set(PROJECT_NAME QtInspectorCore)
 project(${PROJECT_NAME} LANGUAGES CXX)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -115,9 +115,12 @@ AddPrivateInclude("Qt${QT_VERSION_MAJOR}::Quick")
 AddPrivateInclude("Qt${QT_VERSION_MAJOR}::Qml")
 AddPrivateInclude("Qt${QT_VERSION_MAJOR}::Gui")
 AddPrivateInclude("Qt${QT_VERSION_MAJOR}::Widgets")
-target_compile_options(${PROJECT_NAME} PRIVATE /W4)
-set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_FLAGS "/wd4100")
-set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_WARNING_AS_ERROR ON)
+
+if(WIN32)
+  target_compile_options(${PROJECT_NAME} PRIVATE /W4)
+  set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_FLAGS "/wd4100")
+endif()
+#set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_WARNING_AS_ERROR ON)
 target_include_directories(${PROJECT_NAME} PRIVATE ${QT_PRIVATE_INCLUDES})
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Qml Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Widgets libprotobuf-lite libprotobuf)
 add_subdirectory(3rd)

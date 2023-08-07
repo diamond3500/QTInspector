@@ -6,9 +6,6 @@
 #include <QWidget>
 #include <functional>
 
-#include <private/qquickanchors_p.h>
-#include <private/qquickanchors_p_p.h>
-
 #define REGISTER_OBJECT_HANDLE(type, handler) \
   RegisterObjectHandler(qMetaTypeId<type>(), std::bind(handler, this, std::placeholders::_1, std::placeholders::_2))
 
@@ -72,9 +69,9 @@ void MetaObjectDetail::AddCustomPropertites(const QObject* object) {
  }
 
 void MetaObjectDetail::RegisterAllObjectHandler() {
-  REGISTER_OBJECT_HANDLE(QQuickAnchors*, &MetaObjectDetail::HandleQQuickAnchors);
+  //REGISTER_OBJECT_HANDLE(QQuickAnchors*, &MetaObjectDetail::HandleQQuickAnchors);
   REGISTER_OBJECT_HANDLE(QObject*, &MetaObjectDetail::HanldeQObject);
-  REGISTER_OBJECT_HANDLE(QQuickAnchorLine, &MetaObjectDetail::HanldeQQuickAnchorLine);
+  //REGISTER_OBJECT_HANDLE(QQuickAnchorLine, &MetaObjectDetail::HanldeQQuickAnchorLine);
 }
 
 const QVariant& MetaObjectDetail::PropertyValueForKey(const QString& key) const {
@@ -120,23 +117,14 @@ QString MetaObjectDetail::DumpToString() const {
 
 void MetaObjectDetail::HandleQQuickAnchors(const QString& property_name,
                                            const QVariant& property_value) {
-  QQuickAnchors* anchors = property_value.value<QQuickAnchors*>();
-  if (anchors->top().anchorLine != QQuickAnchors::InvalidAnchor) {
-    //todo
-  }
 }
 
 void MetaObjectDetail::HanldeQObject(const QString& property_name,
                                      const QVariant& property_value) {
-  //todo
-  QQuickAnchorLine anchors = property_value.value<QQuickAnchorLine>();
 }
 
 void MetaObjectDetail::HanldeQQuickAnchorLine(const QString& property_name,
                           const QVariant& property_value) {
-  QQuickAnchorLine anchors = property_value.value<QQuickAnchorLine>();
-  if (property_name == "top") {
-  }
 }
 
 QByteArray MetaObjectDetail::Serial() const {

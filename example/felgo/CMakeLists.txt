@@ -67,10 +67,9 @@ target_compile_definitions(appfelgo
     PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-#set_target_properties(appexample PROPERTIES VS_DEBUGGER_ENVIRONMENT "PATH=%PATH%;${CMAKE_PREFIX_PATH}/bin")
 set_target_properties(appfelgo PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_PREFIX_PATH}/bin")
 endif()
-
+set_property(TARGET appfelgo PROPERTY COMPILE_WARNING_AS_ERROR ON)
 target_include_directories(appfelgo PRIVATE ../../source)
 target_link_libraries(appfelgo PRIVATE Felgo QtInspectorCore)
 

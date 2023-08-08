@@ -59,9 +59,9 @@ install(TARGETS appwidget
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-#set_target_properties(appexample PROPERTIES VS_DEBUGGER_ENVIRONMENT "PATH=%PATH%;${CMAKE_PREFIX_PATH}/bin")
 set_target_properties(appwidget PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_PREFIX_PATH}/bin")
 endif()
+set_property(TARGET appwidget PROPERTY COMPILE_WARNING_AS_ERROR ON)
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(appwidget)
 endif()

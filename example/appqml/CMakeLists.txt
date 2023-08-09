@@ -11,7 +11,7 @@ set(CMAKE_AUTORCC ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Quick Widgets)
 
-qt_add_executable(${PROJECT_NAME}
+add_executable(${PROJECT_NAME}
     main.cpp
     resource.qrc
 )

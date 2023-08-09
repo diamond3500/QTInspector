@@ -1,6 +1,7 @@
 #ifndef TREEVIEWBASEMODEL_H
 #define TREEVIEWBASEMODEL_H
 
+#include <memory>
 #include <QAbstractItemModel>
 
 template<class Node>
@@ -32,8 +33,7 @@ public:
       if (parent_node == nullptr) {
         return QModelIndex();
       }
-      return createIndex(static_cast<int>(parent_node->children().size()), 0,
-                         parent_node);
+      return createIndex(static_cast<int>(parent_node->children().size()), 0, (void*)parent_node);
     }
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override {
@@ -77,7 +77,7 @@ protected:
 
 
 protected:
-    std::unique_ptr<Node> root_node_;
+  std::unique_ptr<Node> root_node_;
   QStringList headers_;
 };
 

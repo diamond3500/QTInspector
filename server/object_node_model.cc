@@ -61,12 +61,16 @@ QVariant ObjectNodeModel::OnShowData(const QModelIndex& index,
 }
 
 ObjectSearchProxyModel::ObjectSearchProxyModel(QObject* parent) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
   setRecursiveFilteringEnabled(true);
+#endif
 }
 
 void ObjectSearchProxyModel::SetSearchText(const QString& text) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
   search_text_ = text;
   invalidateRowsFilter();
+#endif
 }
 
 bool ObjectSearchProxyModel::filterAcceptsRow(int source_row,

@@ -26,7 +26,7 @@ void ClientSelector::UpdateClient(TcpClientImpl* client, const pb::AppInfoRsp& a
       QPixmap image;
       auto& screen_image_data = app_info.windows(0).screenimage();
       QByteArray object_byte_array(screen_image_data.data(),
-                                   screen_image_data.size());
+                                   (int)screen_image_data.size());
       QDataStream data_stream(object_byte_array);
       data_stream >> image;
       if (!image.isNull()) {

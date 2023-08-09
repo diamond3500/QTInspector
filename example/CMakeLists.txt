@@ -17,12 +17,14 @@
 # under the License.
 #
 
-add_subdirectory(appqml)
 find_package(Felgo QUIET)
 if (Felgo_FOUND)
     add_subdirectory(felgo)
     set_target_properties(appfelgo PROPERTIES FOLDER "example/appfelgo")
 endif()
+
+#add_subdirectory(appqml)
+#set_target_properties(appqml PROPERTIES FOLDER "example/appqml")
+
 add_subdirectory(appwidget)
-set_target_properties(appqml PROPERTIES FOLDER "example/appqml")
 set_target_properties(appwidget PROPERTIES FOLDER "example/appwidget")

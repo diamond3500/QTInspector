@@ -17,7 +17,7 @@ QString QObjectHelper::ObjectName(const QObject* obj) {
   do {
     if (!ctx || !ctx->engine())
       break;
-    name = ctx->nameForObject(obj);
+    name = ctx->nameForObject(const_cast<QObject*>(obj));
   } while (false);
   if (name.isEmpty()) {
     name = QString::number(reinterpret_cast<uint64_t>(obj), 16);

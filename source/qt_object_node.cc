@@ -30,7 +30,7 @@ void QtObjectNode::FindChildrenObject(QList<QtObjectNode*>& node_list, QObject* 
       continue;
     }
     auto child_node = new QtObjectNode(child, this, window_unique_id_);
-    node_list.emplace_back(child_node);
+    node_list.push_back(child_node);
   }
 }
 
@@ -105,7 +105,7 @@ QDataStream& operator>>(QDataStream& stream, QtObjectNode& node) {
   for (qint32 i = 0; i < children_count; i++) {
     auto child_node = new QtObjectNode(&node);
     stream >> *child_node;
-    node.children_.emplace_back(child_node);
+    node.children_.push_back(child_node);
   }
   return stream;
 }

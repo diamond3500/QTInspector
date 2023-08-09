@@ -93,9 +93,12 @@ void TcpClientImpl::OnSocketError(QAbstractSocket::SocketError error) {
 void TcpClientImpl::ConnectSocketSignal() {
   connect(socket_.get(), &QTcpSocket::stateChanged, this,
           &TcpClientImpl::OnSocketStateChanged);
-
-  connect(socket_.get(), &QTcpSocket::errorOccurred, this,
-          &TcpClientImpl::OnSocketError);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  connect(socket_.get(), &QTcpSocket::errorOccurred, this, &TcpClientImpl::OnSocketError);
+  #else
+  connect(socket_.get(), QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error),
+          this, &TcpClientImpl::OnSocketError);
+#endif
 
   connect(socket_.get(), &QTcpSocket::readyRead, this,
           &TcpClientImpl::OnSocketReadyRead);

@@ -38,7 +38,7 @@ bool PacketUtil::UnPacketData(QByteArray& buffer,
                               int16_t& packet_type,                            
                               int& packet_serial,
                               std::string& body) {
-  qsizetype buffer_len =buffer.size();
+  int buffer_len = (int)buffer.size();
   // check head 
   if (buffer_len < HEAD_SIZE) {
     return false;

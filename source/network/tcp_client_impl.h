@@ -1,5 +1,6 @@
 #pragma once
 #include <QTcpSocket>
+#include <memory>
 
 class TcpClientImpl;
 class TcpClientDelegate {

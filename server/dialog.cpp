@@ -1,4 +1,4 @@
-#include "dialog.h"
+﻿#include "dialog.h"
 #include "qt_window_node.h"
 #include "network/packet_util.h"
 #include <QColorDialog>
@@ -87,14 +87,8 @@ void Dialog::OnDisConnected(TcpClientImpl* client,
   if (current_client_ == client) {
     current_client_ = nullptr;
   }
-
-  clients_.removeIf([client](const auto& item) -> bool {
-    if (item == client) {
-      client->deleteLater();
-      return true;
-    }
-    return false;
-  });
+  clients_.removeAll(client);
+  client->deleteLater();
 }
 
 void Dialog::OnPacketReceived(TcpClientImpl* client,
@@ -144,7 +138,7 @@ void Dialog::HandleWindowInfo(int packet_serial, std::string&& body) {
     for (auto& window_info : app_info.windows()) {
       // set object model
       QByteArray object_byte_array(window_info.objectbuffer().data(),
-                                   window_info.objectbuffer().size());
+                                   (int)window_info.objectbuffer().size());
       QDataStream data_stream(object_byte_array);
       auto object_node = new QtObjectNode(root_node.get());
       data_stream >> *object_node;
@@ -167,7 +161,7 @@ void Dialog::HandleUriContent(int packet_serial, std::string&& body) {
 }
 
 void Dialog::ShowMask(const MetaObjectDetail& detail) {
-   QPointF maped_screen_pt = ui->screen_image->mapTo(this, QPointF(0, 0));
+   QPointF maped_screen_pt = ui->screen_image->mapTo(this, QPoint(0, 0));
   double screen_x = detail.PropertyValueForKey("screen_x").toDouble() * screen_image_scale_ + maped_screen_pt.x();
   double screen_y = detail.PropertyValueForKey("screen_y").toDouble() * screen_image_scale_ + maped_screen_pt.y();
   double width = detail.PropertyValueForKey("width").toDouble() * screen_image_scale_;
@@ -221,7 +215,7 @@ void Dialog::InnerSetProperty(
   command.set_propertyuniqueid(current_select_node->unique_id());
  
   QByteArray body;
-  QDataStream stream(&body, QIODeviceBase::WriteOnly);
+  QDataStream stream(&body, QIODevice::WriteOnly);
   stream << value;
   command.set_value(body.data(), body.size());
 
@@ -241,7 +235,7 @@ void Dialog::UpdateClientSelector(TcpClientImpl* client,
 void Dialog::ShowPropertyValue(const QString& property_name,
                                int row,
                                const QVariant& value) {
-  int type_id = value.typeId();
+  int type_id = value.type();
   BEGIN_HANDLE_PROPERTY_VALUE(type_id)
     HANDLE_PROPERTY_VALUE(QMetaType::Bool, HandleBoolProperty)
     HANDLE_PROPERTY_VALUE(QMetaType::QColor, HandleColorProperty)
@@ -325,7 +319,7 @@ DialogInfo Dialog::ConvertWindowInfo(const ::pb::WindowInfo& window_info) {
   DialogInfo dialog_info; 
   auto& screen_image_data = window_info.screenimage();
   QByteArray object_byte_array(screen_image_data.data(),
-                               screen_image_data.size());
+                               (int)screen_image_data.size());
   QDataStream data_stream(object_byte_array);
   data_stream >> dialog_info.pixmap;
   dialog_info.screen_width = window_info.screenwidth();
@@ -406,7 +400,7 @@ void Dialog::OnPropertyValueEdit(int row, int column) {
   QVariant key = widget_item->data(PROPERTY_NAME_ROLE);
   QVariant value = widget_item->data(PROPERTY_VALUE_ROLE);
   QString text = widget_item->text();
-  switch (value.typeId()) {
+  switch (value.type()) {
     case QMetaType::Double: {
       InnerSetProperty(key.toString(), text.toDouble());
     } break;
@@ -420,7 +414,7 @@ void Dialog::OnPropertyValueEdit(int row, int column) {
       
     } break;
     default: {
-      qDebug() << "unsupport value:" << value.typeId();
+      qDebug() << "unsupport value:" << value.type();
     } break;
   }
 }

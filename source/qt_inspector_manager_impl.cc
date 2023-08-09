@@ -60,7 +60,7 @@ void QtInspectorManagerImpl::FindAppWindows(pb::AppInfoRsp& app_info) {
       QtWindowNode* window_object = new QtWindowNode(window, QObjectHelper::GenerateUniqueId());
       {
         QByteArray data;
-        QDataStream stream(&data, QIODeviceBase::WriteOnly);
+        QDataStream stream(&data, QIODevice::WriteOnly);
         stream << *window_object->root_node();
         info->set_objectbuffer(data.data(), data.size());
       }
@@ -68,7 +68,7 @@ void QtInspectorManagerImpl::FindAppWindows(pb::AppInfoRsp& app_info) {
       {
         QByteArray data;
         QPixmap image = window_object->GrabWindow();
-        QDataStream stream(&data, QIODeviceBase::WriteOnly);
+        QDataStream stream(&data, QIODevice::WriteOnly);
         stream << image;
 
         info->set_screenimage(data.data(), data.size());
@@ -87,7 +87,7 @@ void QtInspectorManagerImpl::FindTopWindows(pb::AppInfoRsp& app_info) {
     QtWindowNode* window_object = new QtWindowNode(widget, QObjectHelper::GenerateUniqueId());
     {
       QByteArray data;
-      QDataStream stream(&data, QIODeviceBase::WriteOnly);
+      QDataStream stream(&data, QIODevice::WriteOnly);
       stream << *window_object->root_node();
       info->set_objectbuffer(data.data(), data.size());
     }
@@ -95,7 +95,7 @@ void QtInspectorManagerImpl::FindTopWindows(pb::AppInfoRsp& app_info) {
     {
       QByteArray data;
       QPixmap image = window_object->GrabWindow();
-      QDataStream stream(&data, QIODeviceBase::WriteOnly);
+      QDataStream stream(&data, QIODevice::WriteOnly);
       stream << image;
 
       info->set_screenimage(data.data(), data.size());
@@ -181,7 +181,7 @@ void QtInspectorManagerImpl::HandleSetProperty(int packet_serial, std::string&& 
     return;
   }
   
-  QByteArray buffer(command.value().data(), command.value().size());
+  QByteArray buffer(command.value().data(), (int)command.value().size());
   QDataStream data_stream(buffer);
   QVariant value;
   data_stream >> value;

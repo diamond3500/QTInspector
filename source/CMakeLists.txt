@@ -16,7 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-cmake_minimum_required(VERSION 3.24.0)
+cmake_minimum_required(VERSION 3.16.0)
 set(PROJECT_NAME QtInspectorCore)
 project(${PROJECT_NAME} LANGUAGES CXX)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -84,40 +84,16 @@ SOURCE_GROUP("network" FILES ${network})
 
 add_library(${PROJECT_NAME} ${sources} ${pb} ${util} ${network})
 
-#message("version: ${Qt${QT_VERSION_MAJOR}_VERSION_MAJOR}.${Qt${QT_VERSION_MAJOR}_VERSION_MINOR}.${Qt${QT_VERSION_MAJOR}_VERSION_PATCH}")
+message("Qt version: ${Qt${QT_VERSION_MAJOR}_VERSION_MAJOR}.${Qt${QT_VERSION_MAJOR}_VERSION_MINOR}.${Qt${QT_VERSION_MAJOR}_VERSION_PATCH}")
 
-
-
-SET(QT_PRIVATE_INCLUDES "")
-macro(AddPrivateInclude module)
-#获取模块的include 路径
-get_target_property(QT_MODULE_INCLUDE_DIRS ${module} INTERFACE_INCLUDE_DIRECTORIES)
-#枚举路径
-foreach(INCLUDE_DIR ${QT_MODULE_INCLUDE_DIRS})
-    #获取目录名
-    get_filename_component(ComponetName ${INCLUDE_DIR} NAME)
-    string(FIND ${ComponetName} "Qt" position)
-    if(${position} EQUAL 0)
-        set(PRIVATE_DIR "")
-        cmake_path(APPEND_STRING PRIVATE_DIR ${INCLUDE_DIR} "/${Qt${QT_VERSION_MAJOR}_VERSION_MAJOR}.${Qt${QT_VERSION_MAJOR}_VERSION_MINOR}.${Qt${QT_VERSION_MAJOR}_VERSION_PATCH}")
-        list(APPEND QT_PRIVATE_INCLUDES ${PRIVATE_DIR})
-
-        set(PRIVATE_DIR "")
-        cmake_path(APPEND_STRING PRIVATE_DIR ${INCLUDE_DIR} "/${Qt${QT_VERSION_MAJOR}_VERSION_MAJOR}.${Qt${QT_VERSION_MAJOR}_VERSION_MINOR}.${Qt${QT_VERSION_MAJOR}_VERSION_PATCH}" "/${ComponetName}")
-        list(APPEND QT_PRIVATE_INCLUDES ${PRIVATE_DIR})
-    endif()
-endforeach(INCLUDE_DIR)
-
-endmacro()
-
-AddPrivateInclude("Qt${QT_VERSION_MAJOR}::Core")
-AddPrivateInclude("Qt${QT_VERSION_MAJOR}::Quick")
-AddPrivateInclude("Qt${QT_VERSION_MAJOR}::Qml")
-AddPrivateInclude("Qt${QT_VERSION_MAJOR}::Gui")
-AddPrivateInclude("Qt${QT_VERSION_MAJOR}::Widgets")
 target_compile_options(${PROJECT_NAME} PRIVATE /W4)
-set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_FLAGS "/wd4100")
+set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_FLAGS "/wd4100 /wd4996")
 set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_WARNING_AS_ERROR ON)
 target_include_directories(${PROJECT_NAME} PRIVATE ${QT_PRIVATE_INCLUDES})
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Qml Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Widgets libprotobuf-lite libprotobuf)
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Qml Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Widgets libprotobuf-lite libprotobuf Ws2_32.lib)
+else()
+    target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Qml Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Widgets libprotobuf-lite libprotobuf)
+endif()
+
 add_subdirectory(3rd)

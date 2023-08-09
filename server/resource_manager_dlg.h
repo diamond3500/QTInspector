@@ -2,6 +2,7 @@
 #define RESOURCE_MANAGER_DLG_H
 
 #include <QDialog>
+#include <QAction>
 #include "network/tcp_server_impl.h"
 #include "pb/app_window.pb.h"
 #include "resource_node_model.h"

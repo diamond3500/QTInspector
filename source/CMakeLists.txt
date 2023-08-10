@@ -86,13 +86,15 @@ add_library(${PROJECT_NAME} ${sources} ${pb} ${util} ${network})
 
 message("Qt version: ${Qt${QT_VERSION_MAJOR}_VERSION_MAJOR}.${Qt${QT_VERSION_MAJOR}_VERSION_MINOR}.${Qt${QT_VERSION_MAJOR}_VERSION_PATCH}")
 
-target_compile_options(${PROJECT_NAME} PRIVATE /W4)
-set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_FLAGS "/wd4100 /wd4996")
+
 set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_WARNING_AS_ERROR ON)
 target_include_directories(${PROJECT_NAME} PRIVATE ${QT_PRIVATE_INCLUDES})
 if(WIN32)
+    target_compile_options(${PROJECT_NAME} PRIVATE /W4)
+    set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_FLAGS "/wd4100 /wd4996")
     target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Qml Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Widgets libprotobuf-lite libprotobuf Ws2_32.lib)
 else()
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-unused-variable -Wno-deprecated)
     target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Qml Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::Widgets libprotobuf-lite libprotobuf)
 endif()
 

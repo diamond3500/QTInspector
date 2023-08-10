@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
        QGuiApplication app(argc, argv);
   QtInspectorManager::Instance().Init();
     QQmlApplicationEngine engine;
-    const QUrl url(u"qrc:/example/Main.qml"_qs);
+    const QUrl url("qrc:/Main.qml");
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreated, &app,
         [url](QObject *obj, const QUrl &objUrl) {

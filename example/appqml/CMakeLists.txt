@@ -16,12 +16,6 @@ add_executable(${PROJECT_NAME}
     resource.qrc
 )
 
-qt_add_qml_module(${PROJECT_NAME}
-    URI example
-    VERSION 1.0
-    QML_FILES Main.qml
-)
-
 set_target_properties(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}

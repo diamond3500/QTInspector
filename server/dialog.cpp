@@ -1,4 +1,4 @@
-﻿#include "dialog.h"
+#include "dialog.h"
 #include "qt_window_node.h"
 #include "network/packet_util.h"
 #include <QColorDialog>
@@ -401,16 +401,16 @@ void Dialog::OnPropertyValueEdit(int row, int column) {
   QVariant value = widget_item->data(PROPERTY_VALUE_ROLE);
   QString text = widget_item->text();
   switch (value.type()) {
-    case QMetaType::Double: {
+    case QVariant::Double: {
       InnerSetProperty(key.toString(), text.toDouble());
     } break;
-    case QMetaType::QString: {
+    case QVariant::String: {
       InnerSetProperty(key.toString(), text);
     } break;
-    case QMetaType::Int: {
+    case QVariant::Int: {
       InnerSetProperty(key.toString(), text.toInt());
     } break;
-    case QMetaType::QUrl: {
+    case QVariant::Url: {
       
     } break;
     default: {

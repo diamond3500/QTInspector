@@ -23,8 +23,8 @@ if (Felgo_FOUND)
     set_target_properties(appfelgo PROPERTIES FOLDER "example/appfelgo")
 endif()
 
-#add_subdirectory(appqml)
-#set_target_properties(appqml PROPERTIES FOLDER "example/appqml")
+add_subdirectory(appqml)
+set_target_properties(appqml PROPERTIES FOLDER "example/appqml")
 
 add_subdirectory(appwidget)
 set_target_properties(appwidget PROPERTIES FOLDER "example/appwidget")

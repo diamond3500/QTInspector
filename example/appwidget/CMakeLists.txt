@@ -21,8 +21,7 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(appwidget
-        MANUAL_FINALIZATION
+    add_executable(appwidget
         ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
@@ -62,6 +61,4 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 set_target_properties(appwidget PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_PREFIX_PATH}/bin")
 endif()
 set_property(TARGET appwidget PROPERTY COMPILE_WARNING_AS_ERROR ON)
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(appwidget)
-endif()
+

@@ -18,8 +18,7 @@ SOURCE_GROUP("sources" FILES ${sources})
 set(PROJECT_SOURCES ${sources})
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(server
-        MANUAL_FINALIZATION
+    add_executable(server
         ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
@@ -56,9 +55,6 @@ install(TARGETS server
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(server)
-endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     set_target_properties(server PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_PREFIX_PATH}/bin")
 endif()
@@ -66,5 +62,7 @@ endif()
 if(WIN32)
     target_compile_options(server PRIVATE /W4)
     set_property(TARGET server PROPERTY COMPILE_FLAGS "/wd4100 /wd4996")
+else()
+    target_compile_options(server PRIVATE -Wno-unused-variable -Wno-deprecated)
 endif()
 set_property(TARGET server PROPERTY COMPILE_WARNING_AS_ERROR ON)

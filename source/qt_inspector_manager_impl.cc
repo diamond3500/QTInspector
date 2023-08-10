@@ -27,7 +27,9 @@ void QtInspectorManagerImpl::Init(const QString& ip, int port) {
 void QtInspectorManagerImpl::Uninit() {
   qDeleteAll(window_object_);
   window_object_.clear();
-  delete tcp_client_;
+  if (tcp_client_) {
+    tcp_client_->deleteLater();
+  }
   tcp_client_ = nullptr;
 }
 

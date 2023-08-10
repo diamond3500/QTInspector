@@ -4,7 +4,11 @@
 ### mac 系统需要执行 chmod 777 QTInspector/tool/protoc
 
 ## 编译
-build 目录下有生成脚本，可以生成各个平台下的工程文件。 特别需要注意 每个build 脚本需要自行修改 CMAKE_PREFIX_PATH 变量指向自己的qt 安装目录。这个 CMAKE_PREFIX_PATH 变量bat 或者 sh脚本文件中。
+build 目录下有生成脚本，可以生成各个平台下的工程文件。 特别需要注意 每个build 执行的时候需要带上Qt 安装目录。 
+```sh
+./cmake_build_osx.sh /Users/test/Qt/6.0.0/clang_64
+```
+
 ### 1) windows平台。  cmake_build_3264.bat， 生成的工程可以使用VS2019 打开。
 ### 2) mac平台。 cmake_build_osx.sh， 生成xcode 工程
 ### 3) 可以直接使用qtcreator 打开工程根目录下 CMakeLists.txt。

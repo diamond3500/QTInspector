@@ -16,15 +16,24 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
+find_package(QT NAMES Qt6 Qt5 REQUIRED Core)
 find_package(Felgo QUIET)
 if (Felgo_FOUND)
     add_subdirectory(felgo)
     set_target_properties(appfelgo PROPERTIES FOLDER "example/appfelgo")
 endif()
 
-add_subdirectory(appqml)
-set_target_properties(appqml PROPERTIES FOLDER "example/appqml")
 
-add_subdirectory(appwidget)
-set_target_properties(appwidget PROPERTIES FOLDER "example/appwidget")
+if(${QT_VERSION} VERSION_LESS 6.2.0)
+    message("appqml version less than 6.2, current version:" ${QT_VERSION})
+else()
+    add_subdirectory(appqml)
+    set_target_properties(appqml PROPERTIES FOLDER "example/appqml")
+endif()
+
+if(${QT_VERSION} VERSION_LESS 5.12.0)
+    message("appwidget version less than 5.12, current version:" ${QT_VERSION})
+else()
+    add_subdirectory(appwidget)
+    set_target_properties(appwidget PROPERTIES FOLDER "example/appwidget")
+endif()

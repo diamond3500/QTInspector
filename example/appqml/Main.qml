@@ -34,7 +34,7 @@ Window {
         id: rightop
         anchors.top: parent.top
         anchors.right: parent.right
-        source:"qrc:/res/green.png"
+        source:"qrc:/appqml/res/green.png"
     }
 
 

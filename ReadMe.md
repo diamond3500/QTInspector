@@ -1,7 +1,7 @@
 ## 环境
 ### cmake 版本 >= 3.16
-### qt >= 5.9
-### mac 系统需要执行 chmod 777 QTInspector/tool/protoc
+### qt >= 5.12。 appwidget >= 5.12 appqml >= 6.2
+### mac 系统需要执行 chmod 777 QTInspector/tool/protoc 修改pb 工具执行权限
 
 ## 编译
 build 目录下有生成脚本，可以生成各个平台下的工程文件。 特别需要注意 每个build 执行的时候需要带上Qt 安装目录。 

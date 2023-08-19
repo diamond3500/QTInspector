@@ -9,19 +9,22 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Quick)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Quick)
 
 set(PROJECT_SOURCES
         main.cpp
         dialog.cpp
         dialog.h
         dialog.ui
-        dialog2.h dialog2.cpp dialog2.ui
+        dialog2.h 
+        dialog2.cpp 
+        dialog2.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    add_executable(appwidget
+    qt_add_executable(appwidget
+        MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
@@ -45,20 +48,32 @@ endif()
 target_include_directories(appwidget PRIVATE ../../source)
 target_link_libraries(appwidget PRIVATE Qt${QT_VERSION_MAJOR}::Widgets QtInspectorCore)
 
+# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
+# If you are developing for iOS or macOS you should consider setting an
+# explicit, fixed bundle identifier manually though.
+if(${QT_VERSION} VERSION_LESS 6.1.0)
+  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.appwidget)
+endif()
 set_target_properties(appwidget PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
+    ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
 )
 
+include(GNUInstallDirs)
 install(TARGETS appwidget
     BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+if(QT_VERSION_MAJOR EQUAL 6)
+    qt_finalize_executable(appwidget)
+endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 set_target_properties(appwidget PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_PREFIX_PATH}/bin")
 endif()
 set_property(TARGET appwidget PROPERTY COMPILE_WARNING_AS_ERROR ON)
-

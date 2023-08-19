@@ -4,7 +4,6 @@
 #include <QDialog>
 #include <QSharedPointer>
 #include <QTableWidgetItem>
-#include "pb/app_window.pb.h"
 #include "network/tcp_server_impl.h"
 #include "float_cover_mask.h"
 #include "object_node_model.h"
@@ -34,6 +33,7 @@ Q_SIGNALS:
                         const std::string& body);
 
     void removeClient(TcpClientImpl* client);
+    void showProperty(const MetaObjectDetail& detail, QtObjectNode* current_select_node);
 
 private:
   void OnNewConnection(TcpClientImpl* client) override;
@@ -58,25 +58,21 @@ private:
   void HandleUriContent(int packet_serial, std::string&& body);
   
   void ShowMask(const MetaObjectDetail& detail);
-  void SendPacket(pb::PacketType type,
-                  std::string&& body,
-                  TcpClientImpl::SendPacketDelegate delegate = nullptr);
+
   void EnableUI();
   DialogInfo ConvertWindowInfo(const ::pb::WindowInfo& window_info);
   void ShowDialogImageIfNeed();
 
  private slots:
+  void SendPacket(pb::PacketType type,
+                  const std::string& body,
+                  TcpClientImpl::SendPacketDelegate delegate = nullptr);
   void OnClickNode(const QModelIndex& proxy_index);
     void on_refresh_clicked();
 
     void OnClientSelected(TcpClientImpl* client);
 
     void on_show_clients_clicked();
-    void OnClickChangeColor();
-    void OnClickChangeFont();
-    void OnClickBrowser();
-    void OnProperyValueStateChange(int state);
-    void OnPropertyValueEdit(int row, int column);
 
     void on_resource_manager_clicked();
 
@@ -87,34 +83,7 @@ private:
     void on_collapse_clicked();
 
 private:
-    void InnerSetProperty(const QString& property_name,
-                          const QVariant& value,
-                          TcpClientImpl::SendPacketDelegate delegate = nullptr);
-    void InitPropertyTable(const MetaObjectDetail& detail);
     void UpdateClientSelector(TcpClientImpl* client, const std::string& body);
-    void ShowPropertyValue(const QString& property_name, int row, const QVariant& value);
-
-
-    void HandleBoolProperty(const QString& property_name,
-                            int row,
-                            const QVariant& value);
-    void HandleColorProperty(const QString& property_name,
-                            int row,
-                            const QVariant& value);
-
-    void HandleFontProperty(const QString& property_name,
-                             int row,
-                             const QVariant& value);
-
-    
-    void HandleUrlProperty(const QString& property_name,
-                            int row,
-                            const QVariant& value);
-    
-
-    void HandleDefaultProperty(const QString& property_name,
-                             int row,
-                             const QVariant& value);
 
 private:
     Ui::Dialog *ui;
@@ -123,7 +92,7 @@ private:
     TcpClientImpl* current_client_ = nullptr;
     std::unique_ptr<FloatCoverMask> cover_mask_;
     float screen_image_scale_ = 1.0f;
-    QtObjectNode* current_select_node = nullptr;
+    QtObjectNode* current_select_node_ = nullptr;
     std::unique_ptr<ClientSelector> client_selector_;
     std::unique_ptr<ShowUriContentDlg> show_uri_content;
     QMap<QtObjectNode*, DialogInfo> root_window_info_;

@@ -12,7 +12,7 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network Quick)
 
 FILE (GLOB sources *.cc *.h *.cpp *.ui *.qrc)
-SOURCE_GROUP("sources" FILES ${sources})
+SOURCE_GROUP("Source Files" FILES ${sources})
 
 
 set(PROJECT_SOURCES ${sources})

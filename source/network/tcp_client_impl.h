@@ -36,7 +36,7 @@ class TcpClientImpl : public QObject {
   void Connect();
 
   int SendPacket(int16_t ptype,
-                  std::string&& data,
+                  const std::string& data,
                   SendPacketDelegate delegate = nullptr);
 
   int ResponsePacket(int16_t ptype, int packet_serial, std::string&& data);

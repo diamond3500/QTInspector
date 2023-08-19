@@ -26,7 +26,7 @@ void TcpClientImpl::Connect() {
 }
 
 int TcpClientImpl::SendPacket(int16_t ptype,
-                               std::string&& data,
+                               const std::string& data,
                                SendPacketDelegate delegate) {
   std::string head;
   int packet_serial = ++packet_serial_;

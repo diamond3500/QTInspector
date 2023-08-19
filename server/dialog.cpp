@@ -51,6 +51,7 @@ void Dialog::OnNewConnection(TcpClientImpl* client) {
   clients_.push_back(client);
   if (nullptr == current_client_) {
     current_client_ = client;
+      setWindowTitle("QTInspector");
     EnableUI();
   }
 }
@@ -66,6 +67,7 @@ void Dialog::OnDisConnected(TcpClientImpl* client,
   emit removeClient(client);
   if (current_client_ == client) {
     current_client_ = nullptr;
+    setWindowTitle("QTInspector(Disconnect)");
   }
   clients_.removeAll(client);
   client->deleteLater();
@@ -228,6 +230,7 @@ void Dialog::ShowDialogImageIfNeed() {
 
 void Dialog::OnClientSelected(TcpClientImpl* client) {
   current_client_ = client;
+  setWindowTitle("QTInspector");
   on_refresh_clicked();
 }
 

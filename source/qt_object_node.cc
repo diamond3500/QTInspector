@@ -19,12 +19,6 @@ QtObjectNode::QtObjectNode(QObject* object, QtObjectNode* parent,int window_uniq
 }
 
 void QtObjectNode::FindChildrenObject(QList<QtObjectNode*>& node_list, QObject* object) {  
-   qDebug() << "start:" << object->children().size() << " pointer:" << object;
-   auto children = object->children();
-   for (auto child : object->children()) {
-        qDebug() << child;
-   }
-   qDebug() << "end:" << object->children().size();
    for (auto child : object->children()) {
     if (!qobject_cast<const QQuickItem*>(child) && !qobject_cast<const QWidget*>(child)) {
       continue;

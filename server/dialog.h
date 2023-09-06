@@ -96,6 +96,6 @@ private:
     std::unique_ptr<ClientSelector> client_selector_;
     std::unique_ptr<ShowUriContentDlg> show_uri_content;
     QMap<QtObjectNode*, DialogInfo> root_window_info_;
-    std::unique_ptr<ObjectSearchProxyModel> object_proxy_model_;
+    ObjectSearchProxyModel* object_proxy_model_ = nullptr;
 };
 #endif // DIALOG_H

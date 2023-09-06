@@ -127,9 +127,9 @@ void Dialog::HandleWindowInfo(int packet_serial, std::string&& body) {
       root_node->AddChild(object_node);
       root_window_info_.insert(object_node, ConvertWindowInfo(window_info));
     }
-    object_proxy_model_ = std::make_unique<ObjectSearchProxyModel>();
+    object_proxy_model_ = new ObjectSearchProxyModel();
     object_proxy_model_->setSourceModel(new ObjectNodeModel(std::move(root_node)));
-    ui->object_tree_view_->setModel(object_proxy_model_.get());
+    ui->object_tree_view_->setModel(object_proxy_model_);
   }
 }
 

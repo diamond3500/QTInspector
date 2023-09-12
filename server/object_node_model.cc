@@ -40,9 +40,6 @@ QVariant ObjectNodeModel::OnShowData(const QModelIndex& index,
                                QtObjectNode* node) const {
   auto object_detail = node->object_detail();
   if (!object_detail) {
-    if (role == Qt::DisplayRole) {
-      return QVariant("root");
-    }
     return QVariant();
   }
   switch (role) {

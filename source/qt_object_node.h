@@ -17,6 +17,13 @@ public:
     return children_;
   }
 
+  int row() const {
+    if (parent_) {
+        return (int)parent_->children_.indexOf(this);
+    }
+    return 0;
+  }
+
   void AddChild(QtObjectNode* child) { 
     children_.push_back(child);
   }

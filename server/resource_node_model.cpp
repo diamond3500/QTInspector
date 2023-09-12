@@ -5,14 +5,10 @@
 
 QMap<QString, QIcon> ResourceNodeModel::type_icon_map_;
 ResourceNodeModel::ResourceNodeModel(QObject* parent) {
-  root_node_ = std::make_unique<ResourceNode>(":/", nullptr);
+  root_node_ = std::make_unique<ResourceNode>("", nullptr);
+  root_node_->AddChild(new ResourceNode(":/", root_node_.get()));
   InitTypeIcon();
 }
-
-ResourceNode* ResourceNodeModel::FindNode(const QString& path) {
-  return FindChildNode(root_node_.get(), path);
-}
-
 
 void ResourceNodeModel::OnGetChildInfo(const QModelIndex& index,
                                        const pb::GetChildDirRsp& rsp) {
@@ -56,20 +52,6 @@ QVariant ResourceNodeModel::OnShowData(const QModelIndex& index,
     }
   }
   return QVariant();
-}
-
-ResourceNode* ResourceNodeModel::FindChildNode(ResourceNode* parent,
-                                               const QString& path) {
-  if (parent->path_ == path) {
-    return parent;
-  }
-  for (auto child : parent->children_) {
-    auto find = FindChildNode(child, path);
-    if (find) {
-      return find;
-    }
-  }
-  return nullptr;
 }
 
 void ResourceNodeModel::InitTypeIcon() {

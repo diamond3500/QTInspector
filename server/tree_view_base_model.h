@@ -16,12 +16,17 @@ public:
       if (!hasIndex(row, column, parent)) {
         return QModelIndex();
       }
+      Node* parent_node  = nullptr;
       if (parent.isValid()) {
-        Node*  parent_node = static_cast<Node*>(parent.internalPointer());
-        auto* child_node = parent_node->children().at(row);
-        return createIndex(row, column, child_node);
+          parent_node = static_cast<Node*>(parent.internalPointer());
       } else {
-        return createIndex(row, column, root_node_.get());
+          parent_node = root_node_.get();
+      }
+      Node* child_item = parent_node->children().at(row);
+      if (child_item) {
+          return createIndex(row, column, child_item);
+      } else {
+          return QModelIndex();
       }
     }
     QModelIndex parent(const QModelIndex& child) const override {
@@ -30,19 +35,21 @@ public:
       }
       auto child_node = static_cast<Node*>(child.internalPointer());
       const Node* parent_node = child_node->parent();
-      if (parent_node == nullptr) {
+      if (parent_node == root_node_.get()) {
         return QModelIndex();
       }
-      return createIndex(static_cast<int>(parent_node->children().size()), 0, (void*)parent_node);
+      return createIndex(static_cast<int>(parent_node->row()), 0, (void*)parent_node);
     }
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override {
+      Node* parent_node  = nullptr;
       if (parent.isValid()) {
-        Node* parent_node = static_cast<Node*>(parent.internalPointer());
-        return static_cast<int>(parent_node->children().size());
+        parent_node = static_cast<Node*>(parent.internalPointer());
       } else {
-        return 1;
+        parent_node = root_node_.get();
       }
+
+      return (int)parent_node->children().size();
     }
     int columnCount(const QModelIndex& parent = QModelIndex()) const override {
       return 1;

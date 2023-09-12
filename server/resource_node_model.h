@@ -11,6 +11,16 @@ struct ResourceNode {
   ~ResourceNode() { qDeleteAll(children_); }
 
   const QList<ResourceNode*>& children() const { return children_; }
+    void AddChild(ResourceNode* child) {
+        children_.push_back(child);
+   }
+
+    int row() const {
+        if (parent_) {
+            return (int)parent_->children_.indexOf(this);
+        }
+        return 0;
+    }
 
   const ResourceNode* parent() const { return parent_; }
 
@@ -28,7 +38,6 @@ class ResourceNodeModel : public TreeViewBaseModel<ResourceNode> {
     Q_OBJECT
 public:
     explicit ResourceNodeModel(QObject* parent = nullptr);
- ResourceNode* FindNode(const QString& path);
 
 public slots:
     void OnGetChildInfo(const QModelIndex& index,
@@ -44,11 +53,6 @@ private:
 
     QVariant OnShowData(const QModelIndex& index, int role,
                         ResourceNode* node) const override;
-
-
-private:
-    ResourceNode* FindChildNode(ResourceNode* parent, const QString& path);
-
 private:
     void InitTypeIcon();
     static QMap<QString, QIcon> type_icon_map_;

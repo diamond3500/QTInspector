@@ -129,7 +129,9 @@ void Dialog::HandleWindowInfo(int packet_serial, std::string&& body) {
     }
     object_proxy_model_ = new ObjectSearchProxyModel();
     object_proxy_model_->setSourceModel(new ObjectNodeModel(std::move(root_node)));
+    auto original_model =  ui->object_tree_view_->model();
     ui->object_tree_view_->setModel(object_proxy_model_);
+    delete original_model;
   }
 }
 

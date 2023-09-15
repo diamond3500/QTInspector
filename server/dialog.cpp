@@ -132,6 +132,7 @@ void Dialog::HandleWindowInfo(int packet_serial, std::string&& body) {
     auto original_model =  ui->object_tree_view_->model();
     ui->object_tree_view_->setModel(object_proxy_model_);
     delete original_model;
+    InitFilter();
   }
 }
 
@@ -253,6 +254,14 @@ void Dialog::on_resource_manager_clicked()
   dlg->exec();
 }
 
+void Dialog::InitFilter() {
+  if (nullptr == object_proxy_model_) {
+    return;
+  }
+  object_proxy_model_->SetSearchText(ui->search_text->text(), false);
+  object_proxy_model_->SetSearchType(ObjectTypeUI, ui->ui_object_filter->isChecked(), false);
+  object_proxy_model_->SetSearchType(ObjectTypeTimer, ui->timer_object_filter->isChecked(), true);
+}
 
 void Dialog::on_search_text_returnPressed()
 {
@@ -260,7 +269,7 @@ void Dialog::on_search_text_returnPressed()
     return;
   }
 
-  object_proxy_model_->SetSearchText(ui->search_text->text());
+  object_proxy_model_->SetSearchText(ui->search_text->text(), true);
   ui->object_tree_view_->expandAll();
 }
 
@@ -272,5 +281,23 @@ void Dialog::on_expand_clicked()
 void Dialog::on_collapse_clicked()
 {
     ui->object_tree_view_->collapseAll();
+}
+
+
+void Dialog::on_ui_object_filter_stateChanged(int arg1)
+{
+    if (nullptr == object_proxy_model_) {
+        return;
+    }
+    object_proxy_model_->SetSearchType(ObjectTypeUI, ui->ui_object_filter->isChecked(), true);
+}
+
+
+void Dialog::on_timer_object_filter_stateChanged(int arg1)
+{
+    if (nullptr == object_proxy_model_) {
+        return;
+    }
+    object_proxy_model_->SetSearchType(ObjectTypeTimer, ui->timer_object_filter->isChecked(), true);
 }
 

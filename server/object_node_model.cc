@@ -63,24 +63,42 @@ ObjectSearchProxyModel::ObjectSearchProxyModel(QObject* parent) {
 #endif
 }
 
-void ObjectSearchProxyModel::SetSearchText(const QString& text) {
+void ObjectSearchProxyModel::SetSearchText(const QString& text, bool flush) {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
   search_text_ = text;
-  invalidateRowsFilter();
+  if (flush) {
+    invalidateRowsFilter();
+  }
+#endif
+}
+
+void ObjectSearchProxyModel::SetSearchType(ObjectType type, bool select, bool flush) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  if (select) {
+     filter_type_ |= type;
+  } else {
+      filter_type_ &= ~type;
+  }
+  if (flush) {
+    invalidateRowsFilter();
+  }
 #endif
 }
 
 bool ObjectSearchProxyModel::filterAcceptsRow(int source_row,
     const QModelIndex& source_parent) const {
-  if (search_text_.isEmpty()) {
-    return true;
-  }
   QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
   auto object_node = static_cast<QtObjectNode*>(index.internalPointer());
   auto object_detail = object_node->object_detail();
   if (!object_detail) {
     return true;
   }
+  if ((object_node->object_type() & filter_type_) == 0) {
+    return false;
+  }
+ if (search_text_.isEmpty()) {
+  return true;
+ }
   if (object_detail->class_name().contains(search_text_, Qt::CaseInsensitive)) {
     return true;
   }

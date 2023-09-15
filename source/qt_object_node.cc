@@ -2,8 +2,19 @@
 #include <QQuickItem>
 #include <QWidget>
 #include <QJsonArray>
+#include <QTimer>
 #include <QJsonDocument>
 #include "util/qobject_helper.h"
+
+static ObjectType ObjectToType(const QObject* obj) {
+    if (qobject_cast<const QQuickItem*>(obj) || qobject_cast<const QWidget*>(obj)) {
+        return ObjectTypeUI;
+    }
+    if (qobject_cast<const QTimer*>(obj)) {
+        return ObjectTypeTimer;
+    }
+    return ObjectTypeUnknow;
+}
 
 QtObjectNode::~QtObjectNode() {
   delete object_detail_;
@@ -20,11 +31,13 @@ QtObjectNode::QtObjectNode(QObject* object, QtObjectNode* parent,int window_uniq
 
 void QtObjectNode::FindChildrenObject(QList<QtObjectNode*>& node_list, QObject* object) {  
    for (auto child : object->children()) {
-    if (!qobject_cast<const QQuickItem*>(child) && !qobject_cast<const QWidget*>(child)) {
-      continue;
-    }
-    auto child_node = new QtObjectNode(child, this, window_unique_id_);
-    node_list.push_back(child_node);
+        auto object_type = ObjectToType(child);
+        if (object_type == ObjectTypeUnknow) {
+            continue;
+        }
+       auto child_node = new QtObjectNode(child, this, window_unique_id_);
+       child_node->object_type_ = object_type;
+       node_list.push_back(child_node);
   }
 }
 
@@ -83,7 +96,7 @@ QJsonObject QtObjectNode::InnerDump(const QtObjectNode& node) {
 }
 
 QDataStream& operator<<(QDataStream& stream, const QtObjectNode& node) {
-  stream << node.unique_id_ << *node.object_detail_ << node.window_unique_id_;
+  stream << node.unique_id_ << *node.object_detail_ << node.window_unique_id_ << node.object_type_;
   stream << static_cast<int>(node.children_.size());
   for (auto child : node.children_) {
     stream << *child;
@@ -93,7 +106,7 @@ QDataStream& operator<<(QDataStream& stream, const QtObjectNode& node) {
 
 QDataStream& operator>>(QDataStream& stream, QtObjectNode& node) {
   node.object_detail_ = new MetaObjectDetail();
-  stream >> node.unique_id_ >> *node.object_detail_ >> node.window_unique_id_;
+  stream >> node.unique_id_ >> *node.object_detail_ >> node.window_unique_id_ >> node.object_type_;
   qint32 children_count = 0;
   stream >> children_count;
   for (qint32 i = 0; i < children_count; i++) {

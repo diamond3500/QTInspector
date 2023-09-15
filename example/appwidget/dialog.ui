@@ -82,6 +82,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="pushButton_3">
+         <property name="text">
+          <string>Timer Test</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QTextEdit" name="textEdit"/>
        </item>
       </layout>

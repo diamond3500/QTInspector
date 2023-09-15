@@ -82,8 +82,13 @@ private:
 
     void on_collapse_clicked();
 
+    void on_ui_object_filter_stateChanged(int arg1);
+
+    void on_timer_object_filter_stateChanged(int arg1);
+
 private:
     void UpdateClientSelector(TcpClientImpl* client, const std::string& body);
+    void InitFilter();
 
 private:
     Ui::Dialog *ui;

@@ -2,10 +2,16 @@
 #include <QObject>
 #include <QList>
 #include "meta_object_detail.h"
+enum ObjectType {
+    ObjectTypeUnknow,
+    ObjectTypeUI = 1,
+    ObjectTypeTimer = 2
+};
+
 class QtObjectNode {
  public:
   QtObjectNode(QObject* object, QtObjectNode* parent, int window_unique_id);
-  QtObjectNode(QtObjectNode* parent) : parent_(parent) {};
+  QtObjectNode(QtObjectNode* parent) : parent_(parent) {}
   ~QtObjectNode();
 
 public:
@@ -38,6 +44,10 @@ public:
 
   int unique_id() const { return unique_id_; }
 
+  ObjectType object_type() {
+    return object_type_;
+  }
+
   void SetProperty(const QString& prop_name, const QVariant& param);
   void Refresh();
 
@@ -60,4 +70,5 @@ private:
   QtObjectNode* parent_ = nullptr;
   int unique_id_ = 0;
   int window_unique_id_ = 0;
+  ObjectType object_type_ = ObjectTypeUnknow;
 };

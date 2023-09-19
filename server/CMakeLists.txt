@@ -20,6 +20,7 @@ set(PROJECT_SOURCES ${sources})
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     add_executable(server
         ${PROJECT_SOURCES}
+        object_method_widget.h object_method_widget.cpp objectmethodwidget.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET server APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

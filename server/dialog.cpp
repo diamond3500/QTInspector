@@ -6,6 +6,7 @@
 #include "./ui_dialog.h"
 #include "pb/app_window.pb.h"
 #include "object_property_widget.h"
+#include "object_method_widget.h"
 
 //background-color: rgba(135, 206, 235, 0.2);
 Dialog::Dialog(QWidget *parent)
@@ -16,7 +17,12 @@ Dialog::Dialog(QWidget *parent)
 
     auto* object_property_widget = new ObjectPropertyWidget(ui->tabWidget);
     ui->tabWidget->addTab(object_property_widget, QString::fromStdWString(L"属性"));
-    connect(this, &Dialog::showProperty, object_property_widget, &ObjectPropertyWidget::OnShowProperty);
+    connect(this, &Dialog::clickNode, object_property_widget, &ObjectPropertyWidget::OnShowProperty);
+
+    auto* object_method_widget = new ObjectMethodWidget(ui->tabWidget);
+    ui->tabWidget->addTab(object_method_widget, QString::fromStdWString(L"方法"));
+    connect(this, &Dialog::clickNode, object_method_widget, &ObjectMethodWidget::OnShowMethod);
+
     connect(object_property_widget, &ObjectPropertyWidget::sendPacket, this, &Dialog::SendPacket);
 
   auto request = std::make_unique<TcpServerImpl::Request>();
@@ -174,7 +180,7 @@ void Dialog::OnClickNode(const QModelIndex& proxy_index) {
   }
   ShowDialogImageIfNeed();
   ShowMask(*detail);
-  emit showProperty(*detail, current_select_node_);
+  emit clickNode(*detail, current_select_node_);
 }
 void Dialog::on_refresh_clicked()
 {

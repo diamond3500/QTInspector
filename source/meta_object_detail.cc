@@ -18,25 +18,42 @@ MetaObjectDetail::MetaObjectDetail(const QObject* object) {
     return;
   }
   class_name_ = meta_object->className();
+  HandlePropertites(meta_object, object);
+  HandleMethod(meta_object, object);
+}
+
+void MetaObjectDetail::HandleMethod(const QMetaObject* meta_object, const QObject* object) {
+  int method_count = meta_object->methodCount();
+  for (int i = 0; i< method_count; i++) {
+     MethodItem item;
+     item._method = meta_object->method(i);
+     item._method_type = item._method.methodType();
+     item._access = item._method.access();
+
+     methods_[item._method.methodSignature()] = item;
+  }
+}
+
+void MetaObjectDetail::HandlePropertites(const QMetaObject* meta_object, const QObject* object) {
   int property_count = meta_object->propertyCount();
   for (int i = 0; i < property_count; i++) {
-    QMetaProperty property = meta_object->property(i);
-    QString property_name = property.name();
-    property_map_[property_name] = property;
-    QVariant property_value = property.read(object);
-    int meta_type_id = property_value.type();
+     PropertyItem property;
+     property._prop = meta_object->property(i);
+    QString property_name = property._prop.name();
+    property._value = property._prop.read(object);
+    int meta_type_id = property._value.type();
     if ((meta_type_id < QMetaType::User) &&
         (meta_type_id != qMetaTypeId<QObject*>())) {
-      properties_[property_name] = property_value;
+        properties_[property_name] = property;
     } else {
-      auto iter = object_handler_map_.find(meta_type_id);
-      if (iter != object_handler_map_.end()) {
-        (*iter)(property_name, property_value);
-      } else {
-        /* qDebug() << meta_type_id << "|" << property_name << "|"
+        auto iter = object_handler_map_.find(meta_type_id);
+        if (iter != object_handler_map_.end()) {
+            (*iter)(property_name, property._value);
+        } else {
+            /* qDebug() << meta_type_id << "|" << property_name << "|"
                  << property_value.typeName() << "|"
                  << property_value.toString();*/
-      }
+        }
     }
   }
 }
@@ -44,8 +61,12 @@ MetaObjectDetail::MetaObjectDetail(const QObject* object) {
 void MetaObjectDetail::AddCustomPropertites(const QObject* object) {
   if (auto quick_object = qobject_cast<const QQuickItem*>(object)) {
     QPointF left_top = quick_object->mapToItem(nullptr, QPointF(0, 0));
-    properties_["screen_x"] = left_top.x();
-    properties_["screen_y"] = left_top.y();
+    PropertyItem item;
+    item._value = left_top.x();
+    properties_["screen_x"] = item;
+
+    item._value = left_top.y();
+    properties_["screen_y"] = item;
     return;
   }
   if (auto widget_object = qobject_cast<const QWidget*>(object)) {
@@ -61,10 +82,13 @@ void MetaObjectDetail::AddCustomPropertites(const QObject* object) {
       }
       left_top = widget_object->mapTo(parent_widget, QPoint(0, 0));
     }
-   
-    properties_["screen_x"] = left_top.x();
-    properties_["screen_y"] = left_top.y();
-    return;
+
+    PropertyItem item;
+    item._value = left_top.x();
+    properties_["screen_x"] = item;
+
+    item._value = left_top.y();
+    properties_["screen_y"] = item;
   }
  }
 
@@ -80,16 +104,16 @@ const QVariant& MetaObjectDetail::PropertyValueForKey(const QString& key) const 
   if (iter == properties_.end()) {
     return empty_property_value;
   }
-  return iter.value();
+  return iter.value()._value;
 }
 
 const QMetaProperty& MetaObjectDetail::PropertyForKey(const QString& key) const {
   static QMetaProperty empty_property;
-  auto iter = property_map_.find(key);
-  if (iter == property_map_.end()) {
+  auto iter = properties_.find(key);
+  if (iter == properties_.end()) {
     return empty_property;
   }
-  return iter.value();
+  return iter.value()._prop;
 }
 
 QStringList MetaObjectDetail::PropertyKeys() const {
@@ -147,12 +171,46 @@ void MetaObjectDetail::RegisterObjectHandler(int meta_type_id,
 }
 
 QDataStream& operator<<(QDataStream& stream, const MetaObjectDetail& detail) {
-  stream << detail.id_ << detail.class_name_
-         << detail.properties_;
+  stream << detail.id_ << detail.class_name_ << detail.properties_;
+  stream << (int)detail.methods_.count();
+  for (auto iter = detail.methods_.begin(); iter != detail.methods_.end(); iter++) {
+    stream << iter.key() << iter.value();
+  }
   return stream;
 }
 
 QDataStream& operator>>(QDataStream& stream, MetaObjectDetail& detail) {
   stream >> detail.id_ >> detail.class_name_ >> detail.properties_;
+  int method_count = 0;
+  stream >> method_count;
+  for (int i = 0; i< method_count; i++) {
+    QString method_signature;
+    MetaObjectDetail::MethodItem item;
+    stream >> method_signature >> item;
+    detail.methods_.insert(method_signature, item);
+  }
   return stream;
 }
+
+
+QDataStream& operator<<(QDataStream& stream, const MetaObjectDetail::MethodItem& detail) {
+  stream << detail._method_type << detail._access;
+  return stream;
+}
+
+QDataStream& operator>>(QDataStream& stream, MetaObjectDetail::MethodItem& detail) {
+  stream >> detail._method_type >> detail._access;
+  return stream;
+}
+
+
+QDataStream& operator<<(QDataStream& stream, const MetaObjectDetail::PropertyItem& detail) {
+  stream << detail._value;
+  return stream;
+}
+
+QDataStream& operator>>(QDataStream& stream, MetaObjectDetail::PropertyItem& detail) {
+  stream >> detail._value;
+  return stream;
+}
+

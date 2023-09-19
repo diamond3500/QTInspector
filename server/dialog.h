@@ -33,7 +33,7 @@ Q_SIGNALS:
                         const std::string& body);
 
     void removeClient(TcpClientImpl* client);
-    void showProperty(const MetaObjectDetail& detail, QtObjectNode* current_select_node);
+    void clickNode(const MetaObjectDetail& detail, QtObjectNode* current_select_node);
 
 private:
   void OnNewConnection(TcpClientImpl* client) override;

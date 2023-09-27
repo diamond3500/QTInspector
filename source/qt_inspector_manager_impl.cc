@@ -18,7 +18,7 @@ QtInspectorManagerImpl& QtInspectorManagerImpl::Instance()
 void QtInspectorManagerImpl::Init(const QString& ip, int port) {
   ip_ = ip;
   port_ = port;
-  QCoreApplication::instance()->installEventFilter(this);
+  qApp->installEventFilter(this);
   // startup timer to get
   connect(&connect_timer_, &QTimer::timeout, this, &QtInspectorManagerImpl::ConnectServerTimeout);
   connect_timer_.start(1000);
@@ -178,7 +178,7 @@ void QtInspectorManagerImpl::HandleSetProperty(int packet_serial, std::string&& 
   if (!window_object) {
     return;
   }
-  auto object_node = window_object->FindQObjectByUniqueId(command.propertyuniqueid());
+  auto object_node = window_object->FindQObjectByUniqueId(command.objectuniqueid());
   if (!object_node) {
     return;
   }

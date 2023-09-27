@@ -27,7 +27,7 @@ message AppInfoRsp {
 
 message SetPropertyReq {
     int32 windowUniqueId = 1;  
-    int32 propertyUniqueId = 2;
+    int32 objectUniqueId = 2;
     string propertyName = 3;
     bytes value = 4;
 }
@@ -55,4 +55,11 @@ message FileInfo {
 message GetChildDirRsp {
     string parentDir = 1;
     repeated FileInfo info = 2; 
+}
+
+message InvokeReq {
+    int32 windowUniqueId = 1;
+    int32 objectUniqueId = 2;
+    string methodSignature = 3;
+    bytes value = 4;
 }

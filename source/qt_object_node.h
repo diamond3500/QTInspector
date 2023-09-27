@@ -42,7 +42,7 @@ public:
 
   int window_unique_id() const { return window_unique_id_; }
 
-  int unique_id() const { return unique_id_; }
+  int object_unique_id() const { return object_unique_id_; }
 
   ObjectType object_type() {
     return object_type_;
@@ -68,7 +68,7 @@ private:
   MetaObjectDetail* object_detail_ = nullptr;
   QList<QtObjectNode*> children_;
   QtObjectNode* parent_ = nullptr;
-  int unique_id_ = 0;
+  int object_unique_id_ = 0;
   int window_unique_id_ = 0;
   ObjectType object_type_ = ObjectTypeUnknow;
 };

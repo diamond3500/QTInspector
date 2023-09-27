@@ -23,7 +23,7 @@ QtObjectNode::~QtObjectNode() {
 
 QtObjectNode::QtObjectNode(QObject* object, QtObjectNode* parent,int window_unique_id)
     : object_pointer_(object),
-      unique_id_(QObjectHelper::GenerateUniqueId()),
+      object_unique_id_(QObjectHelper::GenerateUniqueId()),
       window_unique_id_(window_unique_id) {
   object_detail_ = new MetaObjectDetail(object);
   FindChildrenObject(children_, object);
@@ -42,7 +42,7 @@ void QtObjectNode::FindChildrenObject(QList<QtObjectNode*>& node_list, QObject* 
 }
 
 QtObjectNode* QtObjectNode::FindQObjectByUniqueId(int unique_id) {
-  if (unique_id == unique_id_) {
+  if (unique_id == object_unique_id_) {
     return this;
   }
   for (auto child : children_) {
@@ -96,7 +96,7 @@ QJsonObject QtObjectNode::InnerDump(const QtObjectNode& node) {
 }
 
 QDataStream& operator<<(QDataStream& stream, const QtObjectNode& node) {
-  stream << node.unique_id_ << *node.object_detail_ << node.window_unique_id_ << node.object_type_;
+  stream << node.object_unique_id_ << *node.object_detail_ << node.window_unique_id_ << node.object_type_;
   stream << static_cast<int>(node.children_.size());
   for (auto child : node.children_) {
     stream << *child;
@@ -106,7 +106,7 @@ QDataStream& operator<<(QDataStream& stream, const QtObjectNode& node) {
 
 QDataStream& operator>>(QDataStream& stream, QtObjectNode& node) {
   node.object_detail_ = new MetaObjectDetail();
-  stream >> node.unique_id_ >> *node.object_detail_ >> node.window_unique_id_ >> node.object_type_;
+  stream >> node.object_unique_id_ >> *node.object_detail_ >> node.window_unique_id_ >> node.object_type_;
   qint32 children_count = 0;
   stream >> children_count;
   for (qint32 i = 0; i < children_count; i++) {

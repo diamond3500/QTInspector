@@ -82,7 +82,7 @@ void ObjectPropertyWidget::InnerSetProperty(
     pb::SetPropertyReq command;
     command.set_propertyname(property_name.toStdString());
     command.set_windowuniqueid(current_select_node_->window_unique_id());
-    command.set_propertyuniqueid(current_select_node_->unique_id());
+    command.set_objectuniqueid(current_select_node_->object_unique_id());
 
     QByteArray body;
     QDataStream stream(&body, QIODevice::WriteOnly);

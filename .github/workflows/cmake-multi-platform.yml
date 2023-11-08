@@ -65,7 +65,7 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -DCMAKE_CONFIGURATION_TYPES=Debug;Release
+        -DCMAKE_CONFIGURATION_TYPES="Debug;Release"
         -Dprotobuf_BUILD_TESTS=OFF 
         -Dprotobuf_BUILD_PROTOC_BINARIES=OFF 
         -Dprotobuf_INSTALL=OFF 
